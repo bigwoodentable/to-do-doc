@@ -1,0 +1,154 @@
+openapi: 3.0.3
+
+info:
+  title: To-Do List API Documentation
+  description: API for to-do list data
+  version: 0.1.0
+
+externalDocs:
+  description: "To-do List Github Repository"
+  url: https://github.com/bigwoodentable/to-do-list
+
+servers:
+  - url: http://localhost:3000/
+    description: Local Server
+
+paths:
+  "/api/v1/lists/all":
+    get:
+      tags: ["lists"]
+      summary: Returns all lists
+      responses:
+        "200":
+          description: Success in retrieving all lists
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/task"
+        "500":
+          description: Unable to retrieve all lists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+  "/api/v1/tasks/add":
+    post:
+      tags: ["tasks"]
+      summary: Adds a task
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/addTask-input"
+        required: true
+      responses:
+        "200":
+          description: Success in adding task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/task"
+        "500":
+          description: Unable to add task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+  "/api/v1/tasks/move/{taskId}/{listId}":
+    parameters:
+      - name: taskId
+        in: path
+        description: id of the task to move
+        example: "1"
+        required: true
+        schema:
+          type: string
+      - name: listId
+        in: path
+        description: id of the list to move to
+        example: "2"
+        required: true
+        schema:
+          type: string
+    patch:
+      tags: ["tasks"]
+      summary: Move a task to a different list
+      responses:
+        "200":
+          description: Success in moving task to a different list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/task"
+        "500":
+          description: Unable to move task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+
+components:
+  schemas:
+    addTask-input:
+      type: object
+      properties:
+        listId:
+          type: integer
+          description: ID of the post
+          example: 2
+        name:
+          type: string
+          description: Title of the post
+          example: Testing API
+        description:
+          type: string
+          description: Body of the post
+          example: Testing API while eating a pizza.
+        deadline:
+          type: string
+          description: ID of the user who created the post
+          format: date-time
+          example: "2018-03-20T09:12:28Z"
+        status:
+          type: string
+          description: ID of the user who created the post
+          example: incomplete
+    task:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of the post
+          example: 1
+        lists_id:
+          type: integer
+          description: ID of the post
+          example: 2
+        name:
+          type: string
+          description: Title of the post
+          example: Jogging
+        description:
+          type: string
+          description: Body of the post
+          example: Jog for 1 hour around the park.
+        deadline:
+          type: string
+          description: ID of the user who created the post
+          format: date-time
+          example: "2018-03-20T09:12:28Z"
+        status:
+          type: string
+          description: ID of the user who created the post
+          example: incomplete
+    error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            title:
+              type: string
+              description: Error Message
