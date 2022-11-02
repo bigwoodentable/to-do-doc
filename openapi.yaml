@@ -221,3 +221,4 @@ components:
             title:
               type: string
               description: Error Message
+              example: Internal Server Error
